@@ -1,3 +1,5 @@
-username = 'root'
-password = 'password'
-server = '127.0.0.1:3306'
+import os
+
+username = os.getenv('username')
+password = os.getenv('password')
+server = os.getenv('server')

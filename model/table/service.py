@@ -7,5 +7,3 @@ class Service(db.Model):  # many to many with reserve
     service = Column(String(150), nullable=False)
     cost = Column(INTEGER, nullable=False)
 
-
-# from model.table.reserve_service import ReserveService
