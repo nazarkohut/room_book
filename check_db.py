@@ -5,8 +5,7 @@ from sqlalchemy.orm import Session
 
 from app import db
 from config import username, password, server
-from models import User, Reserve, Service, ReserveService, Hotel
-from datetime import date
+from model.table.hotel import Hotel
 
 engine = create_engine(f"mysql://{username}:{password}@{server}/room_book_db")
 session = Session(bind=engine)
