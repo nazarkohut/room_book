@@ -13,4 +13,5 @@ class ApartmentSchema(Schema):
     class Meta:
         fields = ('image', 'is_available', 'room_capacity', 'floor',  'cost', 'description')
 
+
 apartment_schema = ApartmentSchema()

@@ -3,7 +3,7 @@ from http import HTTPStatus
 from flask import Blueprint, request, Response
 from flask_restful import Resource
 
-from api.apartment.schema import ApartmentSchema, apartment_schema
+from api.apartment.schema import apartment_schema
 from check_db import session
 from model.table.apartment import Apartment
 
@@ -60,6 +60,7 @@ class ApartmentCRUD(Resource):
         session.query(Apartment).filter(Apartment.id == apartment_id).delete()
         session.commit()
         return "Apartment was successfully deleted", 200
+
 
 apartment_blueprint.add_url_rule('/apartment/<int:hotel_id>', view_func=ApartmentBase.as_view("ApartmentBase"))
 apartment_blueprint.add_url_rule('/particular_apartment/<int:apartment_id>', view_func=ApartmentCRUD.as_view("ApartmentCRUD"))

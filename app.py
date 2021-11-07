@@ -21,8 +21,8 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 
-# from check_db import AddAllTables
+from api.city.view import city_blueprint
 from api.apartment.view import apartment_blueprint
-# api.add_resource(AddAllTables, "/api/v1/hello-world/")
-# app.register_blueprint()
+
+app.register_blueprint(city_blueprint)
 app.register_blueprint(apartment_blueprint)
