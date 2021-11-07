@@ -5,7 +5,10 @@ from sqlalchemy.orm import Session
 
 from app import db
 from config import username, password, server
+from model.table.apartment_image import ApartmentImage
+from model.table.famous_place import FamousPlace
 from model.table.hotel import Hotel
+from model.table.review import Review
 
 engine = create_engine(f"mysql://{username}:{password}@{server}/room_book_db")
 session = Session(bind=engine)
@@ -27,6 +30,12 @@ class AddAllTables(Resource):
         # )
 
         # db.session.add(reserve)
+        famous_place = FamousPlace(
+            famous_place='Famous',
+            entrance_fee=500)
+        review = Review(review='review',
+                        mark=5)
+        apartment_image = ApartmentImage(image='sdgfsdf')
         hotel = Hotel(hotel="Redisson", stars=5, image_link="link", description="description",
                       location_link="link",
                       breakfast_included="all_inclusive",
