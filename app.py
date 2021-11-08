@@ -4,7 +4,6 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-
 from config import username, password, server
 
 
@@ -23,6 +22,8 @@ if __name__ == "__main__":
 
 from api.city.view import city_blueprint
 from api.apartment.view import apartment_blueprint
+from api.famous_place.view import famous_place_blueprint
 
 app.register_blueprint(city_blueprint)
 app.register_blueprint(apartment_blueprint)
+app.register_blueprint(famous_place_blueprint)
