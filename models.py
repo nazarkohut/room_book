@@ -4,7 +4,8 @@ from sqlalchemy.orm import relationship
 # from app import db
 from app import db
 from base import Base
-from enums import BreakfastEnum
+from enums.hotel import BreakfastEnum
+
 
 class City(db.Model):
     __tablename__ = 'city'
@@ -13,12 +14,15 @@ class City(db.Model):
     population = Column(INTEGER, nullable=False)
     country = Column(String(50), nullable=False)
 
+
 class FamousPlace(db.Model):  # (Base):
     __tablename__ = 'famous_place'
     id = Column(INTEGER, primary_key=True, unique=True, nullable=False)
     city_id = Column(INTEGER, ForeignKey('city.id'))
     famous_place = Column(String(50), nullable=False)
     entrance_fee = Column(INTEGER, nullable=False)
+    # famous_place_image = Column(String, nullable=False)
+
 
 class Hotel(db.Model):
     __tablename__ = 'hotel'
@@ -69,13 +73,6 @@ class Reserve(db.Model):  # many to many with service
     reserve_finish_date = Column(DateTime)
     reserve_cost = Column(INTEGER, nullable=False)
     services = relationship('Detail', secondary=ReserveService, backref='reserve')
-
-
-# reserve = Table('reserve',
-#                 Base.metadata,
-#                 Column('id', INTEGER, primary_key=True),
-#                 Column('reserve_id', INTEGER),
-#                 Column('service_id', INTEGER))
 
 
 class Service(db.Model):  # many to many with reserve
