@@ -1,5 +1,5 @@
 import os
 
-username = "root"
-password = "root"
-server = "localhost:3306"
+username = os.getenv('username')
+password = os.getenv('password')
+server = os.getenv('server')
