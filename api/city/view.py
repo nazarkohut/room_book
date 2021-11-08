@@ -1,4 +1,3 @@
-
 from flask import Blueprint, request, jsonify
 from flask_restful import Resource
 
@@ -14,6 +13,7 @@ class CityBase(Resource):
         all_cities = session.query(City).all()
         if not all_cities:
             return "Not Found", 404
+
         res = list()
         for city in all_cities:
             city = city.__dict__
@@ -21,14 +21,17 @@ class CityBase(Resource):
             res.append(city)
         return jsonify(res), 200
 
+
+class CityAdd(Resource):
     def post(self):
-        pass
+        city = request.json
+        city_table = City(**city_schema.load(city))
+        session.add(city_table)
+        session.commit()
+        return jsonify(city), 200
 
 
 class CityCRUD(Resource):
-    def get(self):
-        pass
-
     def put(self, city_id):
         city = session.query(City).get(city_id)
         if not city:
@@ -53,6 +56,6 @@ class CityCRUD(Resource):
         return "City was successfully deleted", 200
 
 
+city_blueprint.add_url_rule('/city', view_func=CityAdd.as_view("CityAdd"))
 city_blueprint.add_url_rule('/city/all', view_func=CityBase.as_view("CityBase"))
 city_blueprint.add_url_rule('/city/<int:city_id>', view_func=CityCRUD.as_view("CityCRUD"))
-

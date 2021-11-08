@@ -24,7 +24,7 @@ class ApartmentBase(Resource):
 
     def post(self, hotel_id):
         apartment = request.json
-        apartment_table = Apartment(**apartment_schema.load(apartment), hotel_id=hotel_id)  ####
+        apartment_table = Apartment(**apartment_schema.load(apartment), hotel_id=hotel_id)
         session.add(apartment_table)
         session.commit()
         return jsonify(apartment), 200
