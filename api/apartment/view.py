@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from flask import Blueprint, request, Response
+from flask import Blueprint, request, Response, jsonify
 from flask_restful import Resource
 
 from api.apartment.schema import apartment_schema
@@ -24,10 +24,10 @@ class ApartmentBase(Resource):
 
     def post(self, hotel_id):
         apartment = request.json
-        apartment_table = Apartment(**apartment_schema.load(apartment))  ####
+        apartment_table = Apartment(**apartment_schema.load(apartment), hotel_id=hotel_id)  ####
         session.add(apartment_table)
         session.commit()
-        return Response(apartment, status=HTTPStatus.OK)
+        return jsonify(apartment), 200
 
 
 class ApartmentCRUD(Resource):
@@ -63,4 +63,5 @@ class ApartmentCRUD(Resource):
 
 
 apartment_blueprint.add_url_rule('/apartment/<int:hotel_id>', view_func=ApartmentBase.as_view("ApartmentBase"))
-apartment_blueprint.add_url_rule('/particular_apartment/<int:apartment_id>', view_func=ApartmentCRUD.as_view("ApartmentCRUD"))
+apartment_blueprint.add_url_rule('/particular_apartment/<int:apartment_id>',
+                                 view_func=ApartmentCRUD.as_view("ApartmentCRUD"))
