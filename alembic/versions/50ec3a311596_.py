@@ -1,8 +1,8 @@
-"""Initial
+"""empty message
 
-Revision ID: 3f5184823d13
+Revision ID: 50ec3a311596
 Revises: 
-Create Date: 2021-10-23 23:22:06.062184
+Create Date: 2021-10-25 11:21:15.495326
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '3f5184823d13'
+revision = '50ec3a311596'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -41,6 +41,7 @@ def upgrade():
     sa.Column('birthday', sa.DateTime(), nullable=True),
     sa.Column('is_admin', sa.Boolean(), nullable=False),
     sa.Column('is_bot', sa.Boolean(), nullable=False),
+    sa.Column('permission', sa.Enum('customer', 'hotel_owner', name='userenum'), nullable=True),
     sa.Column('location_link', sa.String(length=500), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
@@ -65,7 +66,8 @@ def upgrade():
     sa.Column('image_link', sa.String(length=500), nullable=False),
     sa.Column('description', sa.String(length=500), nullable=False),
     sa.Column('location_link', sa.String(length=500), nullable=True),
-    sa.Column('breakfast_included', sa.Enum('included', 'not_included', 'all_inclusive', name='breakfastenum'), nullable=True),
+    sa.Column('breakfast_included', sa.Enum('not_included', 'included', 'paid', 'all_inclusive', name='breakfastenum'), nullable=True),
+    sa.Column('transport_from_airport', sa.Enum('not_included', 'bus', 'car', name='transportenum'), nullable=True),
     sa.ForeignKeyConstraint(['city_id'], ['city.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
