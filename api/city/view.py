@@ -13,7 +13,6 @@ class CityBase(Resource):
         all_cities = session.query(City).all()
         if not all_cities:
             return "Not Found", 404
-
         res = list()
         for city in all_cities:
             city = city.__dict__
@@ -42,15 +41,15 @@ class CityCRUD(Resource):
         city.city_image = new_city.city_image
         city.country = new_city.country
         city.population = new_city.population
-        city.min_cost = new_city.min_cost
-        city.number_of_properties = new_city.number_of_properties
+        # city.min_cost = new_city.min_cost
+        # city.number_of_properties = new_city.number_of_properties
         session.commit()
         return "City info successfully changed ", 200
 
     def delete(self, city_id):
         city = session.query(City).get(city_id)
         if not city:
-            return "Wrong City id", 400
+            return "City not found", 404
         session.query(City).filter(City.id == city_id).delete()
         session.commit()
         return "City was successfully deleted", 200

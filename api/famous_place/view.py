@@ -3,6 +3,7 @@ from flask_restful import Resource
 
 from api.famous_place.schema import famous_place_schema
 from check_db import session
+from model.table.city import City
 from model.table.famous_place import FamousPlace
 
 famous_place_blueprint = Blueprint("famous_place", __name__)
@@ -22,6 +23,9 @@ class FamousPlaceBase(Resource):
 
     def post(self, city_id):
         famous_place = request.json
+        city_exist = session.query(City).get(city_id)
+        if not city_exist:
+            return "City with this id does not exist", 400
         famous_place_table = FamousPlace(**famous_place_schema.load(famous_place), city_id=city_id)
         session.add(famous_place_table)
         session.commit()
@@ -29,23 +33,14 @@ class FamousPlaceBase(Resource):
 
 
 class FamousPlaceCRUD(Resource):
-    # def get(self, famous_place_id):
-    #     famous_place = session.query(FamousPlace).get(famous_place_id)
-    #     if not famous_place:
-    #         return "Famous place with this id doesn't exist", 404
-    #     famous_place = famous_place.__dict__
-    #     del famous_place['_sa_instance_state']
-    #     return jsonify(famous_place), 200
-
     def put(self, famous_place_id):
         famous_place = session.query(FamousPlace).get(famous_place_id)
         if not famous_place:
             return "Famous place with this id doesn't exist", 400
-
         new_famous_place = FamousPlace(**famous_place_schema.load(request.json))
         famous_place.city_id = new_famous_place.city_id
         famous_place.famous_place = new_famous_place.famous_place
-        # new_famous_place.famous_place_image = famous_place.famous_place_image
+        famous_place.famous_place_image = new_famous_place.famous_place_image
         famous_place.entrance_fee = new_famous_place.entrance_fee
         session.commit()
         return "Famous place info successfully changed", 200
@@ -53,7 +48,7 @@ class FamousPlaceCRUD(Resource):
     def delete(self, famous_place_id):
         famous_place = session.query(FamousPlace).get(famous_place_id)
         if not famous_place:
-            return "Wrong famous place id", 400
+            return "Famous place not found", 404
         session.query(FamousPlace).filter(FamousPlace.id == famous_place_id).delete()
         session.commit()
         return "Famous place was successfully deleted", 200

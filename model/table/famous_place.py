@@ -8,4 +8,4 @@ class FamousPlace(db.Model):
     city_id = Column(INTEGER, ForeignKey('city.id'))
     famous_place = Column(String(50), nullable=False)
     entrance_fee = Column(INTEGER, nullable=False)
-
+    famous_place_image = Column(String(100), nullable=True)
