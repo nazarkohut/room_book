@@ -6,6 +6,7 @@ from flask_restful import Resource
 from api.apartment.schema import apartment_schema
 from check_db import session
 from model.table.apartment import Apartment
+from model.table.hotel import Hotel
 
 apartment_blueprint = Blueprint("apartment", __name__)
 
@@ -25,6 +26,9 @@ class ApartmentBase(Resource):
     def post(self, hotel_id):
         apartment = request.json
         apartment_table = Apartment(**apartment_schema.load(apartment), hotel_id=hotel_id)
+        hotel_exist = session.query(Hotel).get(hotel_id)
+        if not hotel_exist:
+            return "Hotel does not exist", 404
         session.add(apartment_table)
         session.commit()
         return jsonify(apartment), 200

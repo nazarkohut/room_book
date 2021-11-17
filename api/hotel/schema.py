@@ -7,8 +7,8 @@ class HotelSchema(Schema):
     stars = fields.Int()
     image_link = fields.Str()
     description = fields.Str()
-    # location_link = fields.Str()
-    # breakfast_included = fields.Int()
+    location_link = fields.Str()
+    # breakfast_included = fields.Str()
     # transport_from_airport = fields.
 
     class Meta:

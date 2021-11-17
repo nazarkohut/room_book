@@ -11,7 +11,7 @@ class Hotel(db.Model):
     stars = Column(INTEGER, nullable=False)
     image_link = Column(String(500), nullable=False)
     description = Column(String(500), nullable=False)
-    location_link = Column(String(500))  # url
-    breakfast_included = Column(Enum(BreakfastEnum))
-    transport_from_airport = Column(Enum(TransportEnum))
+    # location_link = Column(String(500))  # url
+    # breakfast_included = Column(Enum(BreakfastEnum))
+    # transport_from_airport = Column(Enum(TransportEnum))
     # type_of_building = Column()

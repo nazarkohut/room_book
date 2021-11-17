@@ -35,8 +35,14 @@ class FamousPlaceBase(Resource):
 class FamousPlaceCRUD(Resource):
     def put(self, famous_place_id):
         famous_place = session.query(FamousPlace).get(famous_place_id)
+        info = request.json
+        city_exist = session.query(City).get(info['city_id'])
+        if not city_exist:
+            return "City with this id does not exist", 400
+
         if not famous_place:
             return "Famous place with this id doesn't exist", 400
+
         new_famous_place = FamousPlace(**famous_place_schema.load(request.json))
         famous_place.city_id = new_famous_place.city_id
         famous_place.famous_place = new_famous_place.famous_place

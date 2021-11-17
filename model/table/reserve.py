@@ -11,5 +11,5 @@ class Reserve(db.Model):  # many to many with service
     user_id = Column(INTEGER, ForeignKey('user.id'))
     reserve_start_date = Column(DateTime)
     reserve_finish_date = Column(DateTime)
-    reserve_cost = Column(INTEGER, nullable=False)
+    reserve_cost = Column(INTEGER, nullable=True)
 

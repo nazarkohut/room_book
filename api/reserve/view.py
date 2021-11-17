@@ -24,10 +24,13 @@ class ReserveBase(Resource):
 
     def post(self, apartment_id):
         reserve = request.json
-        reserve_table = Reserve(**reserve_schema.load(reserve), reserve_id=apartment_id)
+        if reserve['reserve_start_date'] > reserve['reserve_finish_date']:
+            return "Sorry provide valid dates for reserve", 400
+
         apartment_exist = session.query(Apartment).filter(Apartment.id == apartment_id).all()
         if not apartment_exist:
             return "You can not relate this reserve to such apartment because it doesn't exist", 404
+        reserve_table = Reserve(**reserve_schema.load(reserve), reserve_id=apartment_id)
         session.add(reserve_table)
         session.commit()
         return jsonify(reserve), 200
