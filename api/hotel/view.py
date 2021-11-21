@@ -1,10 +1,11 @@
 import sqlalchemy.exc
 from flask import jsonify, Blueprint, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
 
 from api.hotel.schema import hotel_schema
 from misc.db_misc import session
+from misc.permissions import is_hotel_owner
 from model.table.city import City
 from model.table.hotel import Hotel
 
@@ -28,6 +29,10 @@ class HotelBase(Resource):
 class HotelAdd(Resource):
     @jwt_required()
     def post(self, city_id):
+        user_id = get_jwt_identity()
+        if not is_hotel_owner(user_id):
+            return jsonify({"msg": "Permission  denied"}), 403
+
         hotel = request.json
         hotel_table = Hotel(**hotel_schema.load(hotel), city_id=city_id)
         city_exist = session.query(City).filter(City.id == city_id).all()
@@ -52,8 +57,11 @@ class HotelCRUD(Resource):
 
     @jwt_required()
     def put(self, hotel_id):
-        hotel = session.query(Hotel).get(hotel_id)
+        user_id = get_jwt_identity()
+        if not is_hotel_owner(user_id):
+            return jsonify({"msg": "Permission  denied"}), 403
 
+        hotel = session.query(Hotel).get(hotel_id)
         if not hotel:
             return "Looks like there is no such hotel", 404
 
@@ -81,6 +89,10 @@ class HotelCRUD(Resource):
 
     @jwt_required()
     def delete(self, hotel_id):
+        user_id = get_jwt_identity()
+        if not is_hotel_owner(user_id):
+            return jsonify({"msg": "Permission  denied"}), 403
+
         hotel = session.query(Hotel).get(hotel_id)
         if not hotel:
             return "Hotel doesn't exist", 404

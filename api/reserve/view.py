@@ -1,10 +1,11 @@
 import sqlalchemy.exc
 from flask import jsonify, Blueprint, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
 
 from api.reserve.schema import reserve_schema
 from misc.db_misc import session
+from misc.permissions import is_hotel_owner
 from model.table.apartment import Apartment
 from model.table.reserve import Reserve
 
@@ -25,6 +26,10 @@ class ReserveBase(Resource):
 
     @jwt_required()
     def post(self, apartment_id):
+        user_id = get_jwt_identity()
+        if is_hotel_owner(user_id):
+            return jsonify({"msg": "Permission  denied"}), 403
+
         reserve = request.json
         if reserve['reserve_start_date'] > reserve['reserve_finish_date']:
             return "Sorry provide valid dates for reserve", 400
@@ -41,6 +46,10 @@ class ReserveBase(Resource):
 class ReserveCRUD(Resource):
     @jwt_required()
     def delete(self, reserve_id):
+        user_id = get_jwt_identity()
+        if is_hotel_owner(user_id):
+            return jsonify({"msg": "Permission  denied"}), 403
+
         reserve = session.query(Reserve).get(reserve_id)
         if not reserve:
             return "Reserve doesn't exist", 400
