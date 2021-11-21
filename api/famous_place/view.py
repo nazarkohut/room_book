@@ -1,8 +1,10 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from api.famous_place.schema import famous_place_schema
-from check_db import session
+from api.user.view import auth
+from misc.db_misc import session
 from model.table.city import City
 from model.table.famous_place import FamousPlace
 
@@ -21,6 +23,8 @@ class FamousPlaceBase(Resource):
             res.append(famous_place)
         return jsonify(res), 200
 
+    @jwt_required()
+    @auth.login_required
     def post(self, city_id):
         famous_place = request.json
         city_exist = session.query(City).get(city_id)
@@ -33,6 +37,8 @@ class FamousPlaceBase(Resource):
 
 
 class FamousPlaceCRUD(Resource):
+    @jwt_required()
+    @auth.login_required
     def put(self, famous_place_id):
         famous_place = session.query(FamousPlace).get(famous_place_id)
         info = request.json
@@ -51,6 +57,8 @@ class FamousPlaceCRUD(Resource):
         session.commit()
         return "Famous place info successfully changed", 200
 
+    @jwt_required()
+    @auth.login_required
     def delete(self, famous_place_id):
         famous_place = session.query(FamousPlace).get(famous_place_id)
         if not famous_place:

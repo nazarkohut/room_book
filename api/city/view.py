@@ -1,8 +1,10 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from api.city.schema import city_schema
-from check_db import session
+from api.user.view import auth
+from misc.db_misc import session
 from model.table.city import City
 
 city_blueprint = Blueprint("city", __name__)
@@ -22,6 +24,8 @@ class CityBase(Resource):
 
 
 class CityAdd(Resource):
+    @jwt_required()
+    @auth.login_required
     def post(self):
         city = request.json
         city_table = City(**city_schema.load(city))
@@ -31,6 +35,8 @@ class CityAdd(Resource):
 
 
 class CityCRUD(Resource):
+    @jwt_required()
+    @auth.login_required
     def put(self, city_id):
         city = session.query(City).get(city_id)
         if not city:
@@ -46,6 +52,8 @@ class CityCRUD(Resource):
         session.commit()
         return "City info successfully changed ", 200
 
+    @jwt_required()
+    @auth.login_required
     def delete(self, city_id):
         city = session.query(City).get(city_id)
         if not city:

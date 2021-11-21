@@ -1,9 +1,10 @@
 import sqlalchemy.exc
 from flask import jsonify, Blueprint, request
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from api.reserve.schema import reserve_schema
-from check_db import session
+from misc.db_misc import session
 from model.table.apartment import Apartment
 from model.table.reserve import Reserve
 
@@ -22,6 +23,7 @@ class ReserveBase(Resource):
             res.append(reserve)
         return jsonify(res), 200
 
+    @jwt_required()
     def post(self, apartment_id):
         reserve = request.json
         if reserve['reserve_start_date'] > reserve['reserve_finish_date']:
@@ -37,6 +39,7 @@ class ReserveBase(Resource):
 
 
 class ReserveCRUD(Resource):
+    @jwt_required()
     def delete(self, reserve_id):
         reserve = session.query(Reserve).get(reserve_id)
         if not reserve:

@@ -1,9 +1,10 @@
 import sqlalchemy.exc
 from flask import jsonify, Blueprint, request
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from api.hotel.schema import hotel_schema
-from check_db import session
+from misc.db_misc import session
 from model.table.city import City
 from model.table.hotel import Hotel
 
@@ -25,6 +26,7 @@ class HotelBase(Resource):
 
 
 class HotelAdd(Resource):
+    @jwt_required()
     def post(self, city_id):
         hotel = request.json
         hotel_table = Hotel(**hotel_schema.load(hotel), city_id=city_id)
@@ -48,6 +50,7 @@ class HotelCRUD(Resource):
         del hotel['_sa_instance_state']
         return jsonify(hotel), 200
 
+    @jwt_required()
     def put(self, hotel_id):
         hotel = session.query(Hotel).get(hotel_id)
 
@@ -76,6 +79,7 @@ class HotelCRUD(Resource):
         del hotel['_sa_instance_state']
         return jsonify(hotel), 200
 
+    @jwt_required()
     def delete(self, hotel_id):
         hotel = session.query(Hotel).get(hotel_id)
         if not hotel:

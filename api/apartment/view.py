@@ -1,10 +1,11 @@
 from http import HTTPStatus
 
 from flask import Blueprint, request, Response, jsonify
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from api.apartment.schema import apartment_schema
-from check_db import session
+from misc.db_misc import session
 from model.table.apartment import Apartment
 from model.table.hotel import Hotel
 
@@ -23,6 +24,7 @@ class ApartmentBase(Resource):
             return Response("Not Found", status=HTTPStatus.NOT_FOUND)
         return str(res)
 
+    @jwt_required()
     def post(self, hotel_id):
         apartment = request.json
         apartment_table = Apartment(**apartment_schema.load(apartment), hotel_id=hotel_id)
@@ -40,6 +42,7 @@ class ApartmentCRUD(Resource):
         del character['_sa_instance_state']
         return str(character), 200
 
+    @jwt_required()
     def put(self, apartment_id):
         apartment = session.query(Apartment).get(apartment_id)
         if not apartment:
@@ -57,6 +60,7 @@ class ApartmentCRUD(Resource):
         session.commit()
         return "Apartment info successfully changed ", 200
 
+    @jwt_required()
     def delete(self, apartment_id):
         apartment = session.query(Apartment).get(apartment_id)
         if not apartment:
