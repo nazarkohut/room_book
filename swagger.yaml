@@ -1,0 +1,1576 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: room_book
+  description: Webapp which help people with room reservation and analyzing advantages of one hotel among another.
+
+
+paths:
+  /city/all:
+    get:
+      tags: 
+        - City
+      summary: Home page 
+      description: Returns list of all available cities and properties
+      responses:
+        '200':
+            description: Cities with related fields
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/city'  ######
+
+  /city:
+    post:
+      tags: 
+        - City
+      summary: Add new city
+      requestBody:
+        description: Creating new city 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                
+                city:
+                  type: string
+                
+                city_image:
+                  type: string
+                  
+                country:
+                  type: string
+                
+                population:
+                  type: integer
+                
+                # min_cost:
+                #   type: integer
+                  
+                # number_of_properties:
+                #   type: integer 
+  
+      description: Add new city to list of all cities in home page
+      responses:
+        '200':
+            description: New city was added successesfully 
+            content:
+              aplication/json:
+                schema:
+                  type: object
+                  properties:
+                    city:
+                      type: string
+                    
+                    city_image:
+                      type: string
+                      
+                    country:
+                      type: string
+                    
+                    population:
+                      type: integer
+                    
+                    min_cost:
+                      type: integer
+                      
+                    number_of_properties:
+                      type: integer
+        '401':
+          description: Unauthorized
+          
+        '403': 
+          description: permission denied
+                      
+      security:
+        - JWTAuth: [] 
+            
+  /city/{city_id}:
+    put:
+      tags: 
+        - City
+      parameters:
+       - in: path
+         name: city_id
+         schema:
+           type: integer
+         required: true   
+      summary: Update city
+      requestBody:
+        description: Update city 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                
+                city:
+                  type: string
+                
+                city_image:
+                  type: string
+                  
+                country:
+                  type: string
+                
+                population:
+                  type: integer
+                
+                # min_cost:
+                #   type: integer
+                  
+                # number_of_properties:
+                #   type: integer 
+
+    
+      description: Update city from list of all cities in home page
+      responses:
+        '200':
+            description: City was updated successesfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    
+                    city:
+                      type: string
+                    
+                    city_image:
+                      type: string
+                      
+                    country:
+                      type: string
+                    
+                    population:
+                      type: integer
+                    
+                    min_cost:
+                      type: integer
+                      
+                    number_of_properties:
+                      type: integer 
+        '401':
+          description: Unauthorized
+          
+        '403': 
+          description: permission denied              
+          
+      security:
+        - JWTAuth: [] 
+  
+    delete:
+      tags: 
+        - City
+      parameters:
+       - in: path
+         name: city_id
+         schema:
+           type: integer
+         required: true   
+      summary: Delete city
+      
+      description: Delete city from list of all cities in home page
+      responses:
+        '200':
+            description: City was deleted successesfully
+        
+        '401':
+          description: Unauthorized
+          
+        '404': 
+          description: Not Found
+      
+      security:
+        - JWTAuth: [] 
+            
+  /hotels/{city_id}:
+    get:
+      tags: 
+        - Hotel
+      summary: Particular city
+      parameters:
+       - in: path
+         name: city_id
+         schema:
+           type: integer
+         required: true         
+      description: Returns all hotels located in particular city
+      responses:
+        '200':
+          description: Hotels with related fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/hotel'  #####
+        '404': 
+          description: Not Found
+    
+  /hotel/{city_id}:
+    post:
+      tags: 
+        - Hotel
+      parameters:
+       - in: path
+         name: city_id
+         schema:
+           type: integer
+         required: true
+      summary: Add new hotel
+      
+      requestBody:
+        description: Creating new hotel 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                city_id:
+                  type: integer
+                  
+                hotel:
+                  type: string
+                
+                stars: 
+                  type: integer
+                  enum:
+                    - 1
+                    - 2 
+                    - 3
+                    - 4
+                    - 5
+                
+                image: 
+                  type: string
+                  
+                description:
+                  type: string
+                
+                location_on_map:
+                  type: string
+                  
+                breakfast_included:
+                  type: integer
+                  description: "{0:not included, 1:included (apartment cost cover breakfast), 2:hotel provides breakfasts but you have to pay for it, 3:all inclusive }"
+                  enum:
+                    - 0  # not included 
+                    - 1  # included (apartment cost cover breakfast) 
+                    - 2  # hotel provides breakfasts but you have to pay for it
+                    - 3 # all inclusive
+                    
+                transport_from_airport:
+                  type: integer
+                  description: "{0:not included, 1:bus, 2:car}"
+                  enum:
+                    - 0  # not included
+                    - 1  # bus
+                    - 2  # car (hotel taxi) 
+                    
+      security:
+        - JWTAuth: [] 
+     
+      responses:
+        '200': 
+          description: Hotel was added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  city_id:
+                    type: integer
+                    
+                  hotel:
+                    type: string
+                  
+                  stars: 
+                    type: integer
+                    enum:
+                      - 1
+                      - 2 
+                      - 3
+                      - 4
+                      - 5
+                  
+                  image: 
+                    type: string
+                    
+                  description:
+                    type: string
+                  
+                  location_on_map:
+                    type: string
+                    
+                  breakfast_included:
+                    type: integer
+                    description: "{0:not included, 1:included (apartment cost cover breakfast), 2:hotel provides breakfasts but you have to pay for it, 3:all inclusive }"
+                    enum:
+                      - 0  # not included 
+                      - 1  # included (apartment cost cover breakfast) 
+                      - 2  # hotel provides breakfasts but you have to pay for it
+                      - 3 # all inclusive
+                      
+                  transport_from_airport:
+                    type: integer
+                    description: "{0:not included, 1:bus, 2:car}"
+                    enum:
+                      - 0  # not included
+                      - 1  # bus
+                      - 2  # car (hotel taxi) 
+        '401':
+          description: Unauthorized
+        
+        '403': 
+          description: permission denied
+          
+        '404': 
+          description: Not Found
+          
+  /hotel/{hotel_id}:
+    get:
+      tags: 
+        - Hotel
+      summary: Particular hotel apartments
+      parameters:
+       - in: path
+         name: hotel_id
+         schema:
+           type: integer
+         required: true         
+      description: return list of apartments from particular hotel
+      responses:
+        '200':
+          description: list of apartments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/apartment'  #####
+        '404': 
+          description: Not Found
+    
+    put:
+      tags: 
+        - Hotel
+      summary: Update exsisting hotel
+      
+      parameters:
+       - in: path
+         name: hotel_id
+         schema:
+           type: integer
+         required: true
+      
+      requestBody:
+        description: Update exsisting hotel 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                city_id:
+                  type: integer
+                  
+                hotel:
+                  type: string
+                
+                stars: 
+                  type: integer
+                  enum:
+                    - 1
+                    - 2 
+                    - 3
+                    - 4
+                    - 5
+                
+                image: 
+                  type: string
+                  
+                description:
+                  type: string
+                
+                location_on_map:
+                  type: string
+                  
+                breakfast_included:
+                  type: integer
+                  description: "{0:not included, 1:included (apartment cost cover breakfast), 2:hotel provides breakfasts but you have to pay for it, 3:all inclusive }"
+                  enum:
+                    - 0  # not included 
+                    - 1  # included (apartment cost cover breakfast) 
+                    - 2  # hotel provides breakfasts but you have to pay for it
+                    - 3 # all inclusive
+                    
+                transport_from_airport:
+                  type: integer
+                  description: "{0:not included, 1:bus, 2:car}"
+                  enum:
+                    - 0  # not included
+                    - 1  # bus
+                    - 2  # car (hotel taxi) 
+
+      responses:
+        '200': 
+          description: Hotel was updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  city_id:
+                    type: integer
+                    
+                  hotel:
+                    type: string
+                  
+                  stars: 
+                    type: integer
+                    enum:
+                      - 1
+                      - 2 
+                      - 3
+                      - 4
+                      - 5
+                  
+                  image: 
+                    type: string
+                    
+                  description:
+                    type: string
+                  
+                  location_on_map:
+                    type: string
+                    
+                  breakfast_included:
+                    type: integer
+                    description: "{0:not included, 1:included (apartment cost cover breakfast), 2:hotel provides breakfasts but you have to pay for it, 3:all inclusive }"
+                    enum:
+                      - 0  # not included 
+                      - 1  # included (apartment cost cover breakfast) 
+                      - 2  # hotel provides breakfasts but you have to pay for it
+                      - 3 # all inclusive
+                      
+                  transport_from_airport:
+                    type: integer
+                    description: "{0:not included, 1:bus, 2:car}"
+                    enum:
+                      - 0  # not included
+                      - 1  # bus
+                      - 2  # car (hotel taxi) 
+        
+        '403': 
+          description: permission denied
+        
+        '404': 
+          description: Not Found
+      
+      security:
+        - JWTAuth: [] 
+  
+    delete:
+      tags: 
+        - Hotel
+      summary: delete exsisting hotel
+      parameters:
+       - in: path
+         name: hotel_id
+         schema:
+           type: integer
+         required: true 
+     
+      responses:
+        '200': 
+          description: Hotel was deleted successfully
+        '401':
+          description: Unauthorized
+        '403': 
+          description: permission denied
+        '404': 
+          description: Not Found
+      
+      security:
+        - JWTAuth: [] 
+          
+  
+  
+  /famous_place/{city_id}:  
+    get:
+      tags: 
+        - Famous place
+      summary: Famous places for particular city
+      parameters:
+       - in: path
+         name: city_id
+         schema:
+           type: integer
+         required: true         
+      description: All famous places located in particular city
+      responses:
+        
+        '200':
+          description: Famous places with related fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/famous_place' #####
+        '404': 
+          description: Not Found
+          
+    post:
+      tags: 
+        - Famous place
+      summary: Add famous place for particular city
+      parameters:
+       - in: path
+         name: city_id
+         schema:
+           type: integer
+         required: true  
+      requestBody:
+        description: Adding famous place
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+    
+                famous_place:
+                  type: string
+                
+                famous_place_image:
+                  type: string
+                  
+                entrance_fee:
+                  type: integer
+                  example: 100
+                  
+      responses:
+        '200':
+          description: Famous place was added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  
+                  city_id: 
+                    type: integer
+                    
+                    
+                  famous_place:
+                    type: string
+                  
+                  famous_place_image:
+                    type: string
+                    
+                  entrance_fee:
+                    type: integer
+                    example: 100
+        '401':
+          description: Unauthorized
+        
+        '403': 
+          description: permission denied
+          
+        '404': 
+          description: Not Found  
+      
+      security:
+        - JWTAuth: [] 
+          
+  /famous_place/{famous_place_id}:  
+    put:
+      tags: 
+        - Famous place
+      
+      parameters:
+       - in: path
+         name: famous_place_id
+         schema:
+           type: integer
+         required: true
+         
+      summary: Update famous place
+      requestBody:
+        description: Update famous place
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                
+                city_id: 
+                  type: integer
+                  
+                  
+                famous_place:
+                  type: string
+                
+                famous_place_image:
+                  type: string
+                  
+                entrance_fee:
+                  type: integer
+                  example: 100
+                  
+      responses:
+        '200':
+          description: Famous place was added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  
+                  city_id: 
+                    type: integer
+                    
+                    
+                  famous_place:
+                    type: string
+                  
+                  famous_place_image:
+                    type: string
+                    
+                  entrance_fee:
+                    type: integer
+                    example: 100
+        '401':
+          description: Unauthorized
+          
+        '403': 
+          description: permission denied
+          
+        '404': 
+          description: Not Found  
+    
+      security:
+          - JWTAuth: [] 
+
+    delete:
+      tags: 
+        - Famous place
+      summary: Delete particular famous place
+      
+      parameters:
+       - in: path
+         name: famous_place_id
+         schema:
+           type: integer
+         required: true  
+         
+      responses:
+        '200':
+          description: Famous place was deleted successfully
+        
+        '403': 
+          description: permission denied
+          
+        '404': 
+          description: Not Found
+      
+      security:
+        - JWTAuth: []
+    
+    
+  /apartment/{hotel_id}:
+    get:
+      tags: 
+        - Apartment
+      summary:  Apartments for particular hotel
+      parameters:
+       - in: path
+         name: hotel_id
+         schema:
+           type: integer
+         required: true
+         
+      responses:
+        '200':
+          description: Apartments for particular hotel
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/apartment'
+        
+        '404': 
+          description: Not Found
+
+    post:
+      tags: 
+        - Apartment
+      summary: Add particular apartment
+      
+      parameters:
+        - in: path
+          name: hotel_id
+          schema:
+            type: integer
+          required: true
+      
+      requestBody:
+        description: adding new apartment
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                apartment_id:
+                  type: integer
+                  
+                hotel_id:
+                  type: integer
+                
+                image:
+                  type: string
+                  
+                is_available: 
+                  type: boolean
+                
+                room_capacity:
+                  type: integer
+                
+                floor:
+                  type: integer
+                  
+                cost:
+                  type: integer
+                
+                description:
+                  type: string 
+                  
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                properties:
+                  apartment_id:
+                    type: integer
+                    
+                  hotel_id:
+                    type: integer
+                  
+                  image:
+                    type: string
+                    
+                  is_available: 
+                    type: boolean
+                  
+                  room_capacity:
+                    type: integer
+                  
+                  floor:
+                    type: integer
+                    
+                  cost:
+                    type: integer
+                  
+                  description:
+                    type: string 
+        '401':
+          description: Unauthorized
+        '403': 
+          description: permission denied
+        '404':
+          description: Not Found
+        
+      
+      security:
+        - JWTAuth: []      
+  
+  
+  /apartment/{apartment_id}:
+    put:
+      tags:
+        - Apartment
+      summary: Update particular apartment
+      
+      parameters:
+        - in: path
+          name: apartment_id
+          schema:
+            type: integer
+          required: true
+      
+      requestBody:
+        description: update apartment
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                hotel_id:
+                  type: integer
+                
+                image:
+                  type: string
+                  
+                is_available: 
+                  type: boolean
+                
+                room_capacity:
+                  type: integer
+                
+                floor:
+                  type: integer
+                  
+                cost:
+                  type: integer
+                
+                description:
+                  type: string 
+                  
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                properties:
+                  hotel_id:
+                    type: integer
+                  
+                  image:
+                    type: string
+                    
+                  is_available: 
+                    type: boolean
+                  
+                  room_capacity:
+                    type: integer
+                  
+                  floor:
+                    type: integer
+                    
+                  cost:
+                    type: integer
+                  
+                  description:
+                    type: string 
+        '401':
+          description: Unauthorized
+          
+        '403': 
+          description: permission denied
+        
+        '404':
+          description: Not Found
+        
+      
+      security:
+        - JWTAuth: []      
+
+    get:
+      tags:
+        - Apartment
+      summary: Particular apartment
+      parameters:
+       - in: path
+         name: apartment_id
+         schema:
+           type: integer
+         required: true
+      responses:
+        '200':
+          description: Particular apartment info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apartment_id:
+                    type: integer
+                    
+                  hotel_id:
+                    type: integer
+                  
+                  image:
+                    type: string
+                    
+                  is_available: 
+                    type: boolean
+                  
+                  room_capacity:
+                    type: integer
+                  
+                  floor:
+                    type: integer
+                    
+                  cost:
+                    type: integer
+                  
+                  description:
+                    type: string   
+                  
+                  apartment_image:
+                    type: object
+                    properties:
+                      image_id: 
+                        type: integer
+                      apartment_id:
+                        type: string
+                      image_url:
+                        type: string
+                      
+                example:
+                  - apartment_id: 2
+                    hotel_id: 1
+                    image: "http://cloudinary/" 
+                    is_available: 1
+                    room_capacity: 3
+                    floor: 1
+                    cost: 300
+                    description: "<room description>"
+                    apartment_image:
+                    - image_id: 1
+                      apartment_id: 2
+                      image_url: "http://cloudinary/" 
+                    - image_id: 2
+                      apartment_id: 2
+                      image_url: "http://cloudinary/" 
+        '404': 
+          description: Not Found
+  
+    delete:
+      tags:
+        - Apartment
+      summary: Delete particular apartment
+      
+      parameters:
+        - in: path
+          name: apartment_id
+          schema:
+            type: integer
+          required: true
+      
+      responses: 
+        '200':
+          description: apartment deleted successfully
+        
+        '401':
+          description: Unauthorized
+        
+        '403': 
+          description: permission denied
+        
+        '404': 
+          description: apartment not found 
+          
+      security:
+        - JWTAuth: [] 
+          
+  /reserve/{apartment_id}:
+    get:
+      tags:
+        - Reserve
+      summary: Available reserve dates
+      parameters:
+        - in: path
+          name: apartment_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Cost of reserve and available dates
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reserve'
+        '404':
+          description: Not Found
+  
+    post:
+      tags:
+        - Reserve
+      summary: Add new reserve
+      
+      parameters:
+        - in: path
+          name: apartment_id
+          schema:
+            type: integer
+          required: true
+      
+      requestBody:
+        description: User will pass reserve dates and then he'll be redirected to payment (apartment will be not booked until user complete his payment)
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                reserve_date_start:
+                  type: string
+                  format: date  
+                  example: "2021-07-21"
+                  
+                reserve_date_finish:
+                  type: string
+                  format: date
+                  example: "2021-08-22"
+      responses:
+        '202':
+          description: Reserved
+          content:
+            application/json:
+              schema:
+                properties:
+                  reserve_date_start:
+                    type: string
+                    format: date
+                    
+                  reserve_date_finish:
+                    type: string
+                    format: date
+        '401':
+          description: Unauthorized
+                  
+        '403': 
+          description: permission denied
+          
+        '404':
+          description: Not Found
+        
+        
+      security:
+          - JWTAuth: []
+   
+  /reserve/{reserve_id}:
+    delete:
+      tags:
+        - Reserve
+      
+      parameters:
+        - in: path
+          name: reserve_id
+          schema:
+            type: integer
+          required: true
+      
+      summary: Delete reserve
+      
+      responses:
+        '200':
+          description: Reserve deleted successfully
+        '401':
+          description: Unauthorized
+        '403': 
+          description: permission denied
+        '404': 
+          description: Not found
+    
+      security:
+        - JWTAuth: []
+      
+                    
+  /user/register:
+    post:
+      tags:
+        - User
+      summary: Add new user to database
+      requestBody:
+        content:
+          application/json:
+              schema:
+                properties:
+                  email:
+                    example: John_Doe@example.com
+                  
+                  username: 
+                    example: johndoe
+                    
+                  password:
+                    example: "<password>"
+                  
+                  birthday:
+                    example: "2003-06-02"
+                  
+                  hotel_owner: 
+                    example: True
+                  # permission: 
+                  #   description: "Here user choose whom to be {2:customer, 3:hotel owner}"
+                  #   enum:
+                  #     - 2 # customer
+                  #     - 3 # hotel owner
+                  #   example: 2
+    
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+                schema:
+                  properties:
+                    email:
+                      example: John_Doe@example.com
+                    
+                    username: 
+                      example: johndoe
+                      
+                    password:
+                      example: "<password>"
+                    
+                    birthday:
+                      example: "2003-06-02"
+                    
+                    hotel_owner: 
+                      example: True
+                    
+                    # permission: 
+                    #   description: "Here user choose whom to be {2:customer, 3:hotel owner}"
+                    #   enum:
+                    #     - 2 # customer
+                    #     - 3 # hotel owner
+                    #   example: 2
+        '400':
+          description: User already exist
+  
+  /user/login:
+    post:
+      tags:
+        - User
+      summary: Sign in
+      requestBody:
+        content:
+          application/json:
+              schema:
+                properties:
+                  username: 
+                    example: johndoe
+                  password:
+                    example: "<password>"
+                    
+      
+      responses:
+        '400':
+          description: Username or password didn't match
+          content:
+            application/json:
+                schema:
+                  properties:
+                    access_token:
+                        type: string
+                    refresh_token: 
+                      type: string
+        '403':
+          description: You can't change profile that is not yours
+        '200':
+          description: Ok
+  
+  /user/profile/{user_id}:  # user_id will be replaced with username on client side
+    get:
+      tags:
+        - User
+      summary: Return user information
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true  
+        
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                properties:
+                  profile_image:
+                    type: string
+                    format: url
+                    example: 'http://cloudinary/'
+                    
+                  email:
+                    type: string
+                    example: John_Doe@example.com
+                  
+                  username: 
+                    type: string
+                    example: johndoe
+                  
+                  birthday:
+                    type: string
+                    format: date
+                    example: "2003-06-02"
+                  
+                  location:
+                    type: string
+                    format: url
+                    example: 'http://googlemaps/'
+        
+        '401':
+          description: Unauthorized
+                
+        '404': 
+          description: Not Found
+        
+          
+  /user/change_password/{user_id}:
+    put:
+      tags:
+        - User
+      summary: Change user password
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true  
+      responses:
+        '200': 
+          description: Password was successfully changed
+        '400':
+          description: Old password is incorrect
+        
+        '401':
+          description: Unauthorized
+        
+        '404':
+          description: Not Found
+        
+        
+      
+      security:
+          - JWTAuth: []  
+          
+  # /user/update_profile/{user_id}:
+  #   put:
+  #     tags:
+  #       - User
+  #     summary: Change user profile
+  #     parameters:
+  #       - in: path
+  #         name: user_id
+  #         schema:
+  #           type: integer
+  #         required: true
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #             schema:
+  #               properties:
+  #                 location: 
+  #                   type: string
+                  
+        
+      # responses:
+      #   '200': 
+      #     description: Profile successfully changed
+      #     content:
+      #       application/json:
+      #           schema:
+      #             properties:
+      #               location: 
+      #                 type: string
+        
+      #   '401':
+      #     description: Unauthorized
+        
+      #   '404': 
+      #     description: User not found
+        
+      # security:
+      #   - JWTAuth: [] 
+ 
+servers:
+  # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/Speedruners/room_book/1.0
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/Speedruners/room_book/1.0 
+    # url: https://127.0.0.1:5000
+    
+    
+components:
+  schemas:
+    city:
+      type: object
+      properties:
+        city_id: 
+          type: integer
+          
+        city:
+          type: string
+        
+        city_image:
+          type: string  
+          
+        country:
+          type: string
+        
+        population:
+          type: integer
+        
+        min_cost:
+          type: integer
+          
+        number_of_properties:
+          type: integer 
+
+      example:
+       - city_id: 1
+         city:  Kyiv 
+         city_image: 'http://cloudinary'
+         country: Ukraine
+         population: 7 000 000
+         min_cost: 100
+         number_of_properties: 20 000 
+         
+       - city_id: 2
+         city: Lviv
+         city_image: 'http://cloudinary'
+         country: Ukraine
+         population: 3 000 000
+         min_cost: 200
+         number_of_properties: 10 000
+            
+    famous_place:
+      type: object
+      properties:
+        
+        city_id: 
+          type: integer
+          
+        famous_place_id: 
+          type: integer
+          
+        famous_place:
+          type: string
+        
+        famous_place_image:
+          type: string
+          
+        entrance_fee:
+          type: integer
+          example: 100
+        
+      example: 
+        - city_id: 1
+          famous_place_id: 1
+          famous_place_image: http://cloudinary/
+          famous_place: Kyiv-Pechersk Lavra
+          entrance_fee: 0
+        - city_id: 1
+          famous_place_id: 1
+          famous_place_image: http://cloudinary/
+          famous_place: Motherland Monument
+          entrance_fee: 25
+          
+    hotel:
+      type: object
+      properties: 
+        hotel_id:
+          type: integer
+          
+        city_id:
+          type: integer
+          
+        hotel:
+          type: string
+        
+        stars: 
+          type: integer
+          enum:
+            - 1
+            - 2 
+            - 3
+            - 4
+            - 5
+        
+        image: 
+          type: string
+          
+        description:
+          type: string
+        
+        location_on_map:
+          type: string
+          
+        breakfast_included:
+          type: integer
+          description: "{0:not included, 1:included (apartment cost cover breakfast), 2:hotel provides breakfasts but you have to pay for it, 3:all inclusive }"
+          enum:
+            - 0  # not included 
+            - 1  # included (apartment cost cover breakfast) 
+            - 2  # hotel provides breakfasts but you have to pay for it
+            - 3 # all inclusive
+            
+        transport_from_airport:
+          type: integer
+          description: "{0:not included, 1:bus, 2:car}"
+          enum:
+            - 0  # not included
+            - 1  # bus
+            - 2  # car (hotel taxi)
+        
+        reviews:
+          type: object
+          properties:
+            review_id: 
+              type: integer
+            hotel_id: 
+              type: integer
+            user_id:
+              type: integer
+            review:
+              type: string
+            mark:
+              description: "Value from 1 to 5 as integer"
+              type: integer
+            
+            published:
+              type: string
+              format: date
+          
+      
+      example:
+        - hotel_id: 1
+          hotel: BigHotel
+          city_id: 1
+          stars: 5
+          image: "http://cloudinary/"
+          description: "<brief hotel description>"
+          location_on_map: "http://googlemaps/"
+          breakfast_included: 1
+          transport_from_airport: 2
+          reviews:
+            review_id: 1
+            hotel_id: 1
+            user_id: 2
+            review: "There are no conditioner"
+            mark: 4
+            published: "<YYYY-MM-DDTHH:mm:ss. sss>"
+            
+          
+        - hotel_id: 2
+          hotel: HugeHotel
+          city_id: 2
+          stars: 5
+          image: "http://cloudinary/"
+          description: "<brief hotel description>"
+          location_on_map: "http://googlemaps/"
+          breakfast_included: 3
+          transport_from_airport: 1
+          reviews:
+            review_id: 2
+            hotel_id: 1
+            user_id: 1
+            review: "<review>"
+            mark: 5
+            published: "<YYYY-MM-DDTHH:mm:ss. sss>"
+            
+    apartment:
+      type: object
+      properties:
+        apartment_id:
+          type: integer
+          
+        hotel_id:
+          type: integer
+          
+        image:
+          type: string
+        
+        room_capacity:
+          type: integer
+        
+        cost:
+          type: integer
+          
+      example: 
+        - apartment_id: 1
+          hotel_id: 1
+          image: "http://cloudinary/"
+          room_capacity: 2
+          cost: 250
+        
+        - apartment_id: 2
+          hotel_id: 1
+          image: "http://cloudinary/" 
+          room_capacity: 3
+          cost: 300
+      
+    reserve:
+      type: object
+      properties:
+        reserve_id:
+          type: integer
+        
+        apartment_id:
+          type: integer
+          
+        user_id:
+          type: integer
+        
+        reserve_date_start:
+          type: string
+          format: date
+        
+        reserve_date_finish:
+          type: string
+          format: date
+      
+      example:
+      -  reserve_id: 1
+         apartment_id: 1
+         user_id: 1
+         reserve_date_start: "2021-09-25"
+         reserve_date_finish: "2021-10-25"
+      -  reserve_id: 1
+         apartment_id: 1
+         user_id: 2
+         reserve_date_start: "2021-10-25"
+         reserve_date_finish: "2021-10-27"
+    
+    user: #
+      type: object
+      properties:
+        user_id:
+          type: integer
+          example: 1
+        
+        email:
+          type: string
+          example: John_Doe@example.com
+        
+        username: 
+          type: string
+          example: johndoe
+          
+        password:
+          type: string
+          example: "<hashed_password>"
+          readOnly: true
+        
+        birthday:
+          type: string
+          format: date
+          example: "2003-06-02"
+        
+        is_bot:
+          type: boolean
+          example: 0
+        
+        permission: 
+          type: integer 
+          description: "{1:superuser, 2:customer, 3:hotel owner}"
+          enum:
+            - 1 # superuser
+            - 2 # customer
+            - 3 # hotel owner
+      
+  securitySchemes:
+    JWTAuth:
+      type: apiKey  
+      in: header  
+      name: access_token
