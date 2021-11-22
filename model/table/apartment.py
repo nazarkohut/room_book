@@ -8,6 +8,7 @@ class Apartment(db.Model):
     hotel_id = Column(INTEGER, ForeignKey('hotel.id'))
     image = Column(String(500))
     room_capacity = Column(INTEGER, nullable=False)
+    is_available = Column(Boolean, nullable=False)
     # room_type = Column()  # EEEEEEE
     floor = Column(INTEGER, nullable=False)
     cost = Column(INTEGER, nullable=False)
