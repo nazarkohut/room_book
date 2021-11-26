@@ -7,7 +7,7 @@ class HotelSchema(Schema):
     stars = fields.Int()
     image_link = fields.Str()
     description = fields.Str()
-    location_link = fields.Str()
+    #location_link = fields.Str()
     # breakfast_included = fields.Str()
     # transport_from_airport = fields.
 
@@ -18,9 +18,9 @@ class HotelSchema(Schema):
             "stars",
             "image_link",
             "description",
-            # "location_link"
+            #"location_link"
             # "breakfast_included",
-            "transport_from_airport",
+            #"transport_from_airport",
         )
         # unknown = EXCLUDE
 

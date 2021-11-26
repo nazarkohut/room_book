@@ -78,7 +78,7 @@ class HotelCRUD(Resource):
                 return "City with this id does not exist", 400
 
             new_hotel = Hotel(**hotel_schema.load(info))
-            hotel.city_id = new_hotel.city_id
+            #hotel.city_id = new_hotel.city_id
             hotel.hotel = new_hotel.hotel
             hotel.stars = new_hotel.stars
             hotel.image_link = new_hotel.image_link
@@ -87,7 +87,7 @@ class HotelCRUD(Resource):
             # hotel.location_on_map = new_hotel.location_on_map
             # hotel.breakfast_included = new_hotel.location_on_map.breakfast_included
 
-            hotel.transport_from_airport = new_hotel.transport_from_airport
+            #hotel.transport_from_airport = new_hotel.transport_from_airport
 
             hotel = hotel.__dict__
             del hotel['_sa_instance_state']

@@ -64,7 +64,7 @@ class ApartmentCRUD(Resource):
 
             new_apartment = Apartment(**apartment_schema.load(request.json))
 
-            apartment.apartment_id = new_apartment.apartment_id
+            #apartment.apartment_id = new_apartment.apartment_id
             apartment.image = new_apartment.image
             apartment.is_available = new_apartment.is_available
             apartment.room_capacity = new_apartment.room_capacity

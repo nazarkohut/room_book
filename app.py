@@ -15,6 +15,7 @@ app.config.from_object(Config)
 
 db = SQLAlchemy(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql://{username}:{password}@{server}/room_book_db"
+
 migrate = Migrate(app, db)
 
 

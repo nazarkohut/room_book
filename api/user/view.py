@@ -105,10 +105,10 @@ auth = HTTPBasicAuth()
 
 
 @auth.verify_password
-def verify_password(username, password):
+def verify_password(email, password):
     # if username != request.view_args.get('username'):
     #     return False
-    u = session.query(User).filter_by(username=username).first()
+    u = session.query(User).filter_by(email=email).first()
     if not u or not bcrypt.verify(password, u.password):
         return False
     if not u.is_admin:
