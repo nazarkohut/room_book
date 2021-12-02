@@ -1,2 +1,2 @@
-from model.table import apartment
+# from model.table import apartment
 
