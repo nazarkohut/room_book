@@ -1,9 +1,9 @@
 import os
 
-username = os.getenv('username')
-password = os.getenv('password')
-server = os.getenv('server')
+username = "root"
+password = "root"
+server = "localhost:3306"
 
 
 class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY')
+    SECRET_KEY = 'ea5fd604225a4dc08b370ab3aad1c262'

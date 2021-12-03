@@ -10,6 +10,7 @@ from misc.db_misc import session
 from misc.permissions import is_hotel_owner
 from model.table.apartment import Apartment
 from model.table.hotel import Hotel
+from model.table.user import User
 
 apartment_blueprint = Blueprint("apartment", __name__)
 
@@ -83,7 +84,9 @@ class ApartmentCRUD(Resource):
     def delete(self, apartment_id):
         try:
             user_id = get_jwt_identity()
-            if not is_hotel_owner(user_id):
+            user = session.query(User).filter(User.id == user_id).first()
+
+            if not (is_hotel_owner(user_id) or user.is_admin):
                 return jsonify({"msg": "Permission  denied"}), 403
 
             apartment = session.query(Apartment).get(apartment_id)
