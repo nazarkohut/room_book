@@ -37,6 +37,7 @@ class RegisterApi(Resource):
 
 class LoginApi(Resource):
     def post(self):
+        print(request.json)
         try:
             user = session.query(User).filter(User.email == request.json['email']).one()
             if not bcrypt.verify(request.json['password'], user.password):

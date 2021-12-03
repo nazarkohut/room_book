@@ -5,7 +5,5 @@ from model.table.city import City
 from model.table.famous_place import FamousPlace
 
 from model.table.reserve import Reserve
-from model.table.reserve_service import ReserveService
 from model.table.review import Review
-from model.table.service import Service
 from model.table.user import User
