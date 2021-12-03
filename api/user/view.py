@@ -1,4 +1,3 @@
-import base64
 from datetime import datetime, timezone
 
 from flask import Blueprint, request, jsonify
@@ -23,10 +22,10 @@ class RegisterApi(Resource):
         try:
             user = User(**register_schema.load(request.json))
             if session.query(User).filter(User.email == f'{user.email}').count():
-                return "User with this email already registered"
+                return "User with this email already registered", 400
 
             if session.query(User).filter(User.username == f'{user.username}').count():
-                return "User with this username already registered", 400
+                return "User with this username already registered", 404
 
             session.add(user)
             session.commit()
@@ -56,9 +55,9 @@ class LogoutApi(Resource):
             now = datetime.now(timezone.utc)
             session.add(TokenBlackList(jti=jti, blacklisted_at=now))
             session.commit()
-            return jsonify(msg="JWT revoked")
+            return jsonify(msg="JWT revoked"), 200
         except ValidationError as e:
-            return e.__dict__.get("messages")
+            return e.__dict__.get("messages"), 400
 
 
 class Profile(Resource):
@@ -116,29 +115,3 @@ def verify_password(email, password):
     return True
 
 
-# class AdminLogin(Resource):
-#     @jwt_required()
-#     def post(self):
-#         user_id = get_jwt_identity()
-#         user = session.query(User.email, User.password).filter(User.id == user_id)
-#         user_info = request.json
-#         if not (user[0][0] == user_info['email'] and bcrypt.verify(user_info['password'], user[0][1])):
-#             return jsonify({"msg": "Email or password is incorrect"}), 403
-#         encoding = 'utf-8'
-#         email = user_info['email']
-#         password = user_info['password']
-#
-#         credentials = f'{email}:{password}'
-#         encode_credentials = base64.b64encode(credentials.encode("ascii")).decode("ascii")
-#         # print(HTTPBasicAuth(email, password).__dict__)
-#
-#         # print(encode_credentials)
-#         # encode_credentials = str(base64.b64encode(credentials.encode(encoding)), encoding)
-#         token = f'Basic {encode_credentials}'
-#         return jsonify({"token": f"{token}"}), 200
-#
-#
-# admin_blueprint.add_url_rule('/admin/login', view_func=AdminLogin.as_view('admin_login'))
-
-# aG90ZWxfb3duZXI6cGFzc3dvcmQ=
-# aG90ZWxfb3duZXI6cGFzc3dvcmQ=

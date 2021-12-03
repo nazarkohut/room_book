@@ -47,7 +47,10 @@ class ApartmentBase(Resource):
 
 class ApartmentCRUD(Resource):
     def get(self, apartment_id):
-        character = session.query(Apartment).get(apartment_id).__dict__
+        character = session.query(Apartment).get(apartment_id)
+        if not character:
+            return "Apartment doesn't exist", 404
+        character = character.__dict__
         del character['_sa_instance_state']
         return str(character), 200
 

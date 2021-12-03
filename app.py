@@ -13,9 +13,9 @@ api = Api(app)
 jwt = JWTManager(app)
 app.config.from_object(Config)
 
-db = SQLAlchemy(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql://{username}:{password}@{server}/room_book_db"
-
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 

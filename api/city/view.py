@@ -45,7 +45,7 @@ class CityCRUD(Resource):
         try:
             city = session.query(City).get(city_id)
             if not city:
-                return "Wrong City id", 400
+                return "Wrong City id", 404
 
             new_city = City(**city_schema.load(request.json))
             city.city = new_city.city

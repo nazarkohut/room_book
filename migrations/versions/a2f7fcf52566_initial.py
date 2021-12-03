@@ -1,8 +1,8 @@
 """Initial
 
-Revision ID: 999dd83c6560
+Revision ID: a2f7fcf52566
 Revises: 
-Create Date: 2021-11-10 22:55:03.892549
+Create Date: 2021-12-03 04:51:30.371241
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '999dd83c6560'
+revision = 'a2f7fcf52566'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,7 +21,7 @@ def upgrade():
     op.create_table('city',
     sa.Column('id', sa.INTEGER(), nullable=False),
     sa.Column('city_image', sa.String(length=200), nullable=True),
-    sa.Column('city_name', sa.String(length=50), nullable=False),
+    sa.Column('city', sa.String(length=50), nullable=False),
     sa.Column('population', sa.INTEGER(), nullable=False),
     sa.Column('country', sa.String(length=50), nullable=False),
     sa.PrimaryKeyConstraint('id'),
@@ -34,20 +34,25 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
     )
+    op.create_table('token_black_list',
+    sa.Column('id', sa.INTEGER(), nullable=False),
+    sa.Column('jti', sa.String(length=36), nullable=False),
+    sa.Column('blacklisted_at', sa.DateTime(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('user',
     sa.Column('id', sa.INTEGER(), nullable=False),
     sa.Column('email', sa.String(length=100), nullable=False),
     sa.Column('username', sa.String(length=100), nullable=False),
     sa.Column('password', sa.String(length=100), nullable=False),
-    sa.Column('birthday', sa.DateTime(), nullable=True),
+    sa.Column('birthday', sa.DateTime(), nullable=False),
     sa.Column('is_admin', sa.Boolean(), nullable=False),
     sa.Column('is_bot', sa.Boolean(), nullable=False),
-    sa.Column('permission', sa.Enum('customer', 'hotel_owner', name='userenum'), nullable=True),
+    sa.Column('hotel_owner', sa.Boolean(), nullable=False),
     sa.Column('location_link', sa.String(length=500), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('id'),
-    sa.UniqueConstraint('password'),
     sa.UniqueConstraint('username')
     )
     op.create_table('famous_place',
@@ -55,6 +60,7 @@ def upgrade():
     sa.Column('city_id', sa.INTEGER(), nullable=True),
     sa.Column('famous_place', sa.String(length=50), nullable=False),
     sa.Column('entrance_fee', sa.INTEGER(), nullable=False),
+    sa.Column('famous_place_image', sa.String(length=100), nullable=True),
     sa.ForeignKeyConstraint(['city_id'], ['city.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
@@ -66,9 +72,6 @@ def upgrade():
     sa.Column('stars', sa.INTEGER(), nullable=False),
     sa.Column('image_link', sa.String(length=500), nullable=False),
     sa.Column('description', sa.String(length=500), nullable=False),
-    sa.Column('location_link', sa.String(length=500), nullable=True),
-    sa.Column('breakfast_included', sa.Enum('not_included', 'included', 'paid', 'all_inclusive', name='breakfastenum'), nullable=True),
-    sa.Column('transport_from_airport', sa.Enum('not_included', 'bus', 'car', name='transportenum'), nullable=True),
     sa.ForeignKeyConstraint(['city_id'], ['city.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
@@ -78,6 +81,7 @@ def upgrade():
     sa.Column('hotel_id', sa.INTEGER(), nullable=True),
     sa.Column('image', sa.String(length=500), nullable=True),
     sa.Column('room_capacity', sa.INTEGER(), nullable=False),
+    sa.Column('is_available', sa.Boolean(), nullable=False),
     sa.Column('floor', sa.INTEGER(), nullable=False),
     sa.Column('cost', sa.INTEGER(), nullable=False),
     sa.Column('description', sa.String(length=750), nullable=True),
@@ -110,7 +114,7 @@ def upgrade():
     sa.Column('user_id', sa.INTEGER(), nullable=True),
     sa.Column('reserve_start_date', sa.DateTime(), nullable=True),
     sa.Column('reserve_finish_date', sa.DateTime(), nullable=True),
-    sa.Column('reserve_cost', sa.INTEGER(), nullable=False),
+    sa.Column('reserve_cost', sa.INTEGER(), nullable=True),
     sa.ForeignKeyConstraint(['reserve_id'], ['apartment.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id'),
@@ -137,6 +141,7 @@ def downgrade():
     op.drop_table('hotel')
     op.drop_table('famous_place')
     op.drop_table('user')
+    op.drop_table('token_black_list')
     op.drop_table('service')
     op.drop_table('city')
     # ### end Alembic commands ###
